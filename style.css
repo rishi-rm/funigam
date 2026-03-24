@@ -4,7 +4,7 @@ body{
     justify-content: center;
     align-items: center;
     touch-action: none;
-
+    user-select: none;
 }
 canvas{
     margin-top: 0.6rem;
