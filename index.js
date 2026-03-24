@@ -153,11 +153,17 @@ function update() {
     if (keys.ArrowRight) player.x += player.speed
 
     // bounds
-    if (player.x * 2 < 0) player.x = 0 - player.x / 2
-    if (player.x + player.width / 1.5 > canvas.width) {
-        player.x = canvas.width - player.width / 1.5
+    const margin = 80 // 👈 tweak this
+
+    // LEFT
+    if (player.x < -margin) {
+        player.x = -margin
     }
 
+    // RIGHT
+    if (player.x + player.width > canvas.width + margin*2) {
+        player.x = canvas.width - player.width + margin*2
+    }
     // collision
     for (let obj of objects) {
         if (isColliding(player, obj)) {
@@ -250,7 +256,7 @@ function spawnObject() {
         y: -size,
         width: size,
         height: size,
-        speed: 4.5 + Math.random() * 2.25,
+        speed: 4.5 + Math.random() * 2.75,
         img: objImages[imgIndex],
         hitbox
     })
