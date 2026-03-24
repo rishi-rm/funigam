@@ -24,10 +24,10 @@ let gameRunning = false
 let isGameOver = false
 
 const player = {
-    width: 250,
-    height: 250,
+    width: 350,
+    height: 350,
     x: canvas.width / 2 - 125,
-    y: canvas.height - groundHeight - 240,
+    y: canvas.height - groundHeight - 300,
     speed: 6.5
 }
 
@@ -202,7 +202,7 @@ function spawnObject() {
         y: -size,
         width: size,
         height: size,
-        speed: 4.5 + Math.random() * 2,
+        speed: 4.5 + Math.random() * 2.25,
         img: objImages[imgIndex]
     })
 }
