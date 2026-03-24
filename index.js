@@ -82,14 +82,12 @@ function initControls() {
     leftBtn.addEventListener("touchcancel", () => keys.ArrowLeft = false)
     rightBtn.addEventListener("touchcancel", () => keys.ArrowRight = false)
 
-    // tap anywhere to start / restart
     canvas.addEventListener("touchstart", (e) => {
         if (e.target === canvas) {
             if (!gameRunning || isGameOver) startGame()
         }
     })
 
-    // mouse support
     canvas.addEventListener("click", () => {
         if (!gameRunning || isGameOver) startGame()
     })
@@ -102,18 +100,29 @@ function startGame() {
     gameRunning = true
 }
 
-function isColliding(a, b) {
-    const padX = 70
-    const padY = 40
+function isColliding(player, obj) {
+
+    const p = {
+        x: player.x + 55,
+        y: player.y + 60,
+        width: player.width - 180,
+        height: player.height - 120
+    }
+
+    const o = {
+        x: obj.x + obj.hitbox.offsetX,
+        y: obj.y + obj.hitbox.offsetY,
+        width: obj.hitbox.width,
+        height: obj.hitbox.height
+    }
 
     return (
-        a.x + padX < b.x + b.width &&
-        a.x + a.width - padX > b.x &&
-        a.y + padY < b.y + b.height &&
-        a.y + a.height - padY > b.y
+        p.x < o.x + o.width &&
+        p.x + p.width > o.x &&
+        p.y < o.y + o.height &&
+        p.y + p.height > o.y
     )
 }
-
 let spawnTimer = 0
 
 function update() {
@@ -144,9 +153,9 @@ function update() {
     if (keys.ArrowRight) player.x += player.speed
 
     // bounds
-    if (player.x < 0) player.x = 0
-    if (player.x + player.width > canvas.width) {
-        player.x = canvas.width - player.width
+    if (player.x * 2 < 0) player.x = 0 - player.x / 2
+    if (player.x + player.width / 1.5 > canvas.width) {
+        player.x = canvas.width - player.width / 1.5
     }
 
     // collision
@@ -167,6 +176,25 @@ function draw() {
     ctx.fillStyle = "lightgreen"
     ctx.fillRect(0, canvas.height - groundHeight, canvas.width, groundHeight)
 
+    // player hitbox
+    // ctx.strokeStyle = "red"
+    // ctx.strokeRect(
+    //     player.x + 55,
+    //     player.y + 60,
+    //     player.width - 180,
+    //     player.height - 120
+    // )
+
+    // object hitboxes
+    // objects.forEach(obj => {
+    //     ctx.strokeStyle = "blue"
+    //     ctx.strokeRect(
+    //         obj.x + obj.hitbox.offsetX,
+    //         obj.y + obj.hitbox.offsetY,
+    //         obj.hitbox.width,
+    //         obj.hitbox.height
+    //     )
+    // })
     // objects
     objects.forEach(obj => {
         ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height)
@@ -197,13 +225,34 @@ function spawnObject() {
     const size = 60
     const imgIndex = Math.floor(Math.random() * objImages.length)
 
+    let hitbox
+
+    if (imgIndex === 0) {
+        // object1 (2500x2500)
+        hitbox = {
+            offsetX: 10,
+            offsetY: 10,
+            width: size - 20,
+            height: size - 20
+        }
+    } else {
+        // object2 (4267x4267)
+        hitbox = {
+            offsetX: 15,
+            offsetY: 15,
+            width: size - 30,
+            height: size - 30
+        }
+    }
+
     objects.push({
         x: Math.random() * (canvas.width - size),
         y: -size,
         width: size,
         height: size,
         speed: 4.5 + Math.random() * 2.25,
-        img: objImages[imgIndex]
+        img: objImages[imgIndex],
+        hitbox
     })
 }
 
