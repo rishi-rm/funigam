@@ -3,6 +3,8 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
+    touch-action: none;
+
 }
 canvas{
     margin-top: 0.6rem;
@@ -10,4 +12,22 @@ canvas{
     width: 1280px;
     border: 2px solid black;
     padding: 0;
+}
+.controls {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 40px;
+}
+
+.controls button {
+    width: 80px;
+    height: 80px;
+    font-size: 30px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.5);
+    color: white;
 }

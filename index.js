@@ -1,8 +1,8 @@
 const canvas = document.querySelector('.gameCanvas')
 const ctx = canvas.getContext('2d')
 
-canvas.width = 1280
-canvas.height = 720
+canvas.width = 720
+canvas.height = 1280
 
 const groundHeight = 100
 
@@ -38,17 +38,62 @@ const keys = {
     ArrowRight: false
 }
 
-document.addEventListener("keydown", (e) => {
-    if (e.key in keys) keys[e.key] = true
+let assetsLoaded = 0
+const totalAssets = 4
 
-    if (e.key === "Enter") {
-        startGame()
+function assetLoaded() {
+    assetsLoaded++
+    if (assetsLoaded === totalAssets) {
+        initControls()
+        gameLoop()
     }
-})
+}
 
-document.addEventListener("keyup", (e) => {
-    if (e.key in keys) keys[e.key] = false
-})
+playerImg.onload = assetLoaded
+gameOverImg.onload = assetLoaded
+obj1Img.onload = assetLoaded
+obj2Img.onload = assetLoaded
+
+const leftBtn = document.getElementById("leftBtn")
+const rightBtn = document.getElementById("rightBtn")
+
+function initControls() {
+
+    // keyboard
+    document.addEventListener("keydown", (e) => {
+        if (e.key in keys) keys[e.key] = true
+
+        if (e.key === "Enter") {
+            startGame()
+        }
+    })
+
+    document.addEventListener("keyup", (e) => {
+        if (e.key in keys) keys[e.key] = false
+    })
+
+    // buttons
+    leftBtn.addEventListener("touchstart", () => keys.ArrowLeft = true)
+    leftBtn.addEventListener("touchend", () => keys.ArrowLeft = false)
+
+    rightBtn.addEventListener("touchstart", () => keys.ArrowRight = true)
+    rightBtn.addEventListener("touchend", () => keys.ArrowRight = false)
+
+    leftBtn.addEventListener("touchcancel", () => keys.ArrowLeft = false)
+    rightBtn.addEventListener("touchcancel", () => keys.ArrowRight = false)
+
+    // tap anywhere to start / restart
+    canvas.addEventListener("touchstart", (e) => {
+        if (e.target === canvas) {
+            if (!gameRunning || isGameOver) startGame()
+        }
+    })
+
+    // mouse support
+    canvas.addEventListener("click", () => {
+        if (!gameRunning || isGameOver) startGame()
+    })
+}
 
 function startGame() {
     objects.length = 0
@@ -59,7 +104,7 @@ function startGame() {
 
 function isColliding(a, b) {
     const padX = 70
-    const padY = 40 
+    const padY = 40
 
     return (
         a.x + padX < b.x + b.width &&
@@ -77,7 +122,7 @@ function update() {
 
     // spawn
     spawnTimer++
-    if (spawnTimer > 40) {
+    if (spawnTimer > 50) {
         spawnObject()
         spawnTimer = 0
     }
@@ -127,9 +172,9 @@ function draw() {
         ctx.drawImage(obj.img, obj.x, obj.y, obj.width, obj.height)
     })
 
-    // player or game over image
+    // player / game over
     if (isGameOver) {
-        ctx.drawImage(gameOverImg, player.x, player.y+20, player.width+20, player.height-20)
+        ctx.drawImage(gameOverImg, player.x, player.y + 20, player.width + 20, player.height - 20)
     } else {
         ctx.drawImage(playerImg, player.x, player.y, player.width, player.height)
     }
@@ -140,11 +185,11 @@ function draw() {
     ctx.textAlign = "center"
 
     if (!gameRunning && !isGameOver) {
-        ctx.fillText("Press Enter to Start", canvas.width / 2, canvas.height / 2)
+        ctx.fillText("Tap Anywhere to Start", canvas.width / 2, canvas.height / 2)
     }
 
     if (isGameOver) {
-        ctx.fillText("Press Enter to Restart", canvas.width / 2, canvas.height / 2)
+        ctx.fillText("Tap Anywhere to Restart", canvas.width / 2, canvas.height / 2)
     }
 }
 
@@ -162,11 +207,8 @@ function spawnObject() {
     })
 }
 
-
 function gameLoop() {
     update()
     draw()
     requestAnimationFrame(gameLoop)
 }
-
-gameLoop()
