@@ -28,7 +28,7 @@ const player = {
     height: 250,
     x: canvas.width / 2 - 125,
     y: canvas.height - groundHeight - 240,
-    speed: 5
+    speed: 6.5
 }
 
 const objects = []
@@ -202,7 +202,7 @@ function spawnObject() {
         y: -size,
         width: size,
         height: size,
-        speed: 3 + Math.random() * 2,
+        speed: 4.5 + Math.random() * 2,
         img: objImages[imgIndex]
     })
 }
